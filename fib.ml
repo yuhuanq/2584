@@ -11,5 +11,3 @@ let is_adj a b =
   if d > smaller then false
   else true
 
-let newfib = 1
-
