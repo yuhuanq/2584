@@ -1,4 +1,0 @@
-#directory "_build";;
-#load "fib.cmo";;
-#load "board.cmo";;
-open Board
