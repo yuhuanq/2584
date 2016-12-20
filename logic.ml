@@ -41,9 +41,9 @@ open Monad
 let move t mv =
   match mv with
   | Left ->
-    let f b = return (Board.move_left b) in
-    t >>= f >>= fun b ->
-      return (Board.spawn b)
+    t >>= fun b ->
+      return (Board.move_left b) >>= fun b ->
+        return (Board.spawn b)
   | Right ->
       t >>= fun b ->
         return (Board.move_right b) >>= fun b ->
