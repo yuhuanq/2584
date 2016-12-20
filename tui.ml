@@ -61,7 +61,8 @@ let win () =
   print_endline "Noice! You win. But high of a score can you achieve?"
 
 let lose () =
-  print_endline "You lost."
+  print_endline "You lost.";
+  print_endline "Play again? [y/n]"
 
 let goodbye () =
   print_endline "Thank you for playing.";

@@ -28,6 +28,7 @@ module Grid = struct
 
   (* [init x y] initializes a new game grid of dim x y *)
   let init x y : t =
+    turns := 1;
     Array.make_matrix x y 0
 
   let set g x y nw : t =

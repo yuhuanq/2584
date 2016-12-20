@@ -13,6 +13,14 @@ let rec input () =
   | 'l' -> Logic.Right
   | _ -> input ()
 
+type continue = Yes | No
+
+let rec yn_input () =
+  match Input.get_char () with
+  | 'y' -> Yes
+  | 'n' -> No
+  | _ -> yn_input ()
+
 (* t : Logic.t *)
 let rec loop t =
   Tui.render t;
@@ -26,10 +34,15 @@ let rec loop t =
       loop t'
   | Logic.Lose ->
       Tui.lose ();
-      Tui.goodbye ();
-      exit 0
+      begin match yn_input () with
+      | Yes ->
+        main ()
+      | No ->
+        Tui.goodbye ();
+        exit 0
+      end
 
-let main () =
+and main () =
   let newgame = Logic.init 4 in
   loop newgame
 
