@@ -13,13 +13,10 @@ type move = Up | Down | Left | Right
 (* monad *)
 type t = Board.Grid.t Board.t * status
 
-let turns t =
-  match fst t with
-  | (_,x,_) -> x
-
-let score (b,_) = Board.turns b
-
 let turns (b,_) = Board.turns b
+
+let score (b,_) = Board.score b
+
 
 let get_status t =
   if Board.contains_win (fst t) then Win
@@ -45,13 +42,20 @@ let move t mv =
   match mv with
   | Left ->
     let f b = return (Board.move_left b) in
-    t >>= f
+    t >>= f >>= fun b ->
+      return (Board.spawn b)
   | Right ->
-      t >>= fun b -> return (Board.move_right b)
+      t >>= fun b ->
+        return (Board.move_right b) >>= fun b ->
+          return (Board.spawn b)
   | Up ->
-      t >>= fun b -> return (Board.move_up b)
+      t >>= fun b ->
+        return (Board.move_up b) >>= fun b ->
+          return (Board.spawn b)
   | Down ->
-      t >>= fun b -> return (Board.move_right b)
+      t >>= fun b ->
+        return (Board.move_down b) >>= fun b ->
+          return (Board.spawn b)
 
 let init n =
   Random.self_init ();

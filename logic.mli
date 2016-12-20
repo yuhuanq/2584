@@ -11,6 +11,7 @@ type move = Up | Down | Left | Right
 type t = Board.Grid.t Board.t * status
 
 val turns : t -> int
+
 val score : t -> int
 
 val move : t -> move -> t

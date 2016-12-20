@@ -11,3 +11,6 @@ val render : Logic.t -> unit
 
 val goodbye : unit -> unit
 
+val win : unit -> unit
+val lose : unit -> unit
+

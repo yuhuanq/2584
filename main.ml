@@ -18,7 +18,16 @@ let rec loop t =
   Tui.render t;
   let mv = input () in
   let t' = Logic.move t mv in
-  loop t'
+  match snd t' with
+  | Logic.Playing ->
+      loop t'
+  | Logic.Win ->
+      Tui.win ();
+      loop t'
+  | Logic.Lose ->
+      Tui.lose ();
+      Tui.goodbye ();
+      exit 0
 
 let main () =
   let newgame = Logic.init 4 in

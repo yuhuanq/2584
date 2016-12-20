@@ -36,7 +36,7 @@ val spawn : Grid.t t  -> Grid.t t
 
 val turns : Grid.t t -> int
 
-val turns : Grid.t t -> int
+val score : Grid.t t -> int
 
 val moves_available : Grid.t t -> bool
 

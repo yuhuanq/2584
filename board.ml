@@ -21,7 +21,7 @@ end
 module Grid = struct
   type t = int array array
 
-  let turns = ref 0
+  let turns = ref 1
 
   (* empty cells = 0 *)
   let empty = 0
@@ -165,6 +165,7 @@ module Monad = struct
   type 'a t = 'a * turns * score
   let return g = g,0,0
   let bind (grid,turns,score) f =
+    (* Printf.printf "gains: %d" score; *)
     let grid',turns',gains = f grid in
     (grid',turns',score+gains)
 end
@@ -187,8 +188,8 @@ let spawn (grid,turns,score) =
       let grid' = Grid.set grid x y 1 in
       grid',turns,score
 
-let turns (_,ts,_) = ts
-let score (_,_,sc) = sc
+let turns ((_,ts,_):Grid.t t) = ts
+let score ((_,_,sc):Grid.t t) = sc
 
 let fst' (a,_,_) = a
 let moves_available t =

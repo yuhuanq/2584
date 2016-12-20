@@ -51,11 +51,17 @@ let display_board (b : Board.Grid.t Board.t) =
 (* st : Logic.t *)
 let render st =
   (* let status = snd st in *)
-  let score = Logic.score st in
   let turns = Logic.turns st in
+  let score = Logic.score st in
   Printf.printf "Score: %d\n" score;
   Printf.printf "Turn: %d\n" turns;
   display_board (fst st)
+
+let win () =
+  print_endline "Noice! You win. But high of a score can you achieve?"
+
+let lose () =
+  print_endline "You lost."
 
 let goodbye () =
   print_endline "Thank you for playing.";
