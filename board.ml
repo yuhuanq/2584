@@ -77,27 +77,27 @@ module Grid = struct
     b
 
   let merge lst =
-    let rec loop acc removed lst = match lst with
+    let rec loop acc removed lst =
+      match lst with
     | [] -> List.rev acc, removed
-    | h::h2::[] ->
-        begin
-          let t = [] in
-          if (Fib.is_adj h h2) then
-            (* add padding *)
-            loop (h+h2::empty::acc) (h::h2::removed) t
-          else
-            loop (h2::h::acc) removed t
-        end
     | h::h2::t ->
         begin
           if (Fib.is_adj h h2) then
             (* add padding *)
-            loop (empty::h+h2::acc) (h::h2::removed) t
+            loop (h+h2::acc) (h::h2::removed) t
           else
-            loop (h2::h::acc) removed t
+            loop (h::acc) removed (h2::t)
         end
     | [h] -> List.rev (h::acc), removed in
-    loop [] [] lst
+    let interm = loop [] [] lst in
+    let rec add_padding lst n =
+      if n=0 || n<0 then lst
+      else add_padding (lst @ [empty]) (n-1) in
+    let orig_len = List.length lst in
+    if orig_len > (List.length (fst interm)) then
+      add_padding (fst interm) (orig_len - (List.length (fst interm))), snd interm
+    else
+      interm
 
   let merge_lr f arr =
     let len = Array.length arr in
@@ -106,7 +106,15 @@ module Grid = struct
     let arr',rmd = merge (Array.to_list buf) in
     Array.of_list arr',rmd
 
-  (* [merge_right arr] shifts elts in arr rightwards and merges elts if possible *)
+  let merge_lr_right f arr =
+    let len = Array.length arr in
+    let buf = Array.make len 0 in
+    f len arr buf;
+    let buf' = List.rev (Array.to_list buf) in
+    let arr',rmd = merge buf' in
+    Array.of_list (List.rev arr'),rmd
+
+  (* [merge_right arr] shifts elts in arr rightwards and merges*)
   let merge_right arr =
     let f len arr buf =
       let k = ref (len-1) in
@@ -117,7 +125,7 @@ module Grid = struct
             k:= !k - 1
           end
       done in
-    merge_lr f arr
+    merge_lr_right f arr
 
   let merge_left arr =
     let f len arr buf =
