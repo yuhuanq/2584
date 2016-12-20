@@ -8,6 +8,8 @@ operations
 
 Text based interface only at the moment.
 
+Tested and built with OCaml 4.03.
+
 `make`
 
 `./main.byte`
