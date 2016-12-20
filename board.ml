@@ -99,45 +99,35 @@ module Grid = struct
     else
       interm
 
-  let merge_lr f arr =
+  let merge_left arr =
     let len = Array.length arr in
     let buf = Array.make len 0 in
-    f len arr buf;
+    let k = ref 0 in
+    for i=0 to len-1 do
+      if arr.(i) <> empty then
+        begin
+          buf.(!k) <- arr.(i);
+          k:= !k + 1
+        end
+    done;
     let arr',rmd = merge (Array.to_list buf) in
     Array.of_list arr',rmd
 
-  let merge_lr_right f arr =
+  (* [merge_right arr] shifts elts in arr rightwards and merges*)
+  let merge_right arr =
     let len = Array.length arr in
     let buf = Array.make len 0 in
-    f len arr buf;
+    let k = ref (len-1) in
+    for i=len-1 downto 0 do
+      if arr.(i) <> empty then
+        begin
+          buf.(!k) <- arr.(i);
+          k:= !k - 1
+        end
+    done;
     let buf' = List.rev (Array.to_list buf) in
     let arr',rmd = merge buf' in
     Array.of_list (List.rev arr'),rmd
-
-  (* [merge_right arr] shifts elts in arr rightwards and merges*)
-  let merge_right arr =
-    let f len arr buf =
-      let k = ref (len-1) in
-      for i=len-1 downto 0 do
-        if arr.(i) <> empty then
-          begin
-            buf.(!k) <- arr.(i);
-            k:= !k - 1
-          end
-      done in
-    merge_lr_right f arr
-
-  let merge_left arr =
-    let f len arr buf =
-      let k = ref 0 in
-      for i=0 to len-1 do
-        if arr.(i) <> empty then
-          begin
-            buf.(!k) <- arr.(i);
-            k:= !k + 1
-          end
-      done in
-    merge_lr f arr
 
   let move fmerge g =
     let g',rmd = Array.map fmerge g |> Array.to_list |> List.split in
