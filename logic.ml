@@ -33,29 +33,25 @@ module Monad = struct
     let status = get_status res in
     fst res, status
   let (>>=) = bind
+  let lift f = fun b -> return (f b)
 end
 
 (* fun action : board -> board * status *)
 (* fun board.move_left : board -> board *)
 open Monad
+
+let spawn b = return (Board.spawn b)
+
 let move t mv =
   match mv with
   | Left ->
-    t >>= fun b ->
-      return (Board.move_left b) >>= fun b ->
-        return (Board.spawn b)
+    t >>= lift Board.move_left >>= spawn
   | Right ->
-      t >>= fun b ->
-        return (Board.move_right b) >>= fun b ->
-          return (Board.spawn b)
+      t >>= lift Board.move_right >>= spawn
   | Up ->
-      t >>= fun b ->
-        return (Board.move_up b) >>= fun b ->
-          return (Board.spawn b)
+      t >>= lift Board.move_up >>= spawn
   | Down ->
-      t >>= fun b ->
-        return (Board.move_down b) >>= fun b ->
-          return (Board.spawn b)
+      t >>= lift Board.move_down >>= spawn
 
 let init n =
   Random.self_init ();
