@@ -7,28 +7,20 @@
 type turns = int
 type score = int
 
-module type Rep = sig
-  (* leaving for now for testing, will abstract out eventually *)
+module type G = sig
   type t
-  val move_left : t -> t * turns * score
-  val move_right : t -> t * turns * score
-  val move_up : t -> t * turns * score
-  val move_down : t -> t * turns * score
   val to_list : t -> int list list
-  val init : int -> int -> t
 end
+
 (* namespace for grid related methods *)
 module Grid = struct
   type t = int array array
-
-  let turns = ref 1
 
   (* empty cells = 0 *)
   let empty = 0
 
   (* [init x y] initializes a new game grid of dim x y *)
   let init x y : t =
-    turns := 1;
     Array.make_matrix x y 0
 
   let set g x y nw : t =
@@ -68,7 +60,7 @@ module Grid = struct
 
   let transpose mx =
     let sizex,sizey = Array.length mx, Array.length mx.(0) in
-    let b = init sizey sizex in
+    let b = Array.make_matrix sizey sizex 0 in
     for x = 0 to sizex-1 do
       for y = 0 to sizey-1 do
         b.(y).(x) <- mx.(x).(y)
@@ -132,9 +124,7 @@ module Grid = struct
   let move fmerge g =
     let g',rmd = Array.map fmerge g |> Array.to_list |> List.split in
     let score = rmd |> List.flatten |> List.fold_left (+) 0 in
-    let t = !turns in
-    turns := !turns + 1;
-    Array.of_list g',t,score
+    Array.of_list g',0,score
 
   let move_right g =
     move merge_right g
@@ -144,19 +134,14 @@ module Grid = struct
 
   let move_up g =
     let g' = transpose g in
-    let g'',turns,score = move merge_left g' in
-    transpose g'',turns,score
+    let g'',t,score = move merge_left g' in
+    transpose g'',t,score
 
   let move_down g =
     let g' = transpose g in
-    let g'',turns,score = move merge_right g' in
-    transpose g'',turns,score
+    let g'',t,score = move merge_right g' in
+    transpose g'',t,score
 end
-
-(*
- * type turns = int
- * type score = int
- *)
 
 type 'a t = 'a * turns * score
 
@@ -164,9 +149,11 @@ module Monad = struct
   type 'a t = 'a * turns * score
   let return g = g,0,0
   let bind (grid,turns,score) f =
-    (* Printf.printf "gains: %d" score; *)
-    let grid',turns',gains = f grid in
-    (grid',turns',score+gains)
+    let grid',_,gains = f grid in
+    if grid <> grid' then
+      (grid',turns+1,score+gains)
+    else
+      (grid',turns,score)
 end
 
 open Monad

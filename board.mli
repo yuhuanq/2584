@@ -9,18 +9,12 @@ type turns = int
 type score = int
 type 'a t = 'a * turns * score
 
-module type Rep = sig
-  (* leaving for now for testing, will abstract out eventually *)
+module type G = sig
   type t
-  val move_left : t -> t * turns * score
-  val move_right : t -> t * turns * score
-  val move_up : t -> t * turns * score
-  val move_down : t -> t * turns * score
   val to_list : t -> int list list
-  val init : int -> int -> t
 end
 
-module Grid : Rep
+module Grid : G
 
 val init : int -> int -> Grid.t t
 
