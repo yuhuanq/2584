@@ -58,7 +58,7 @@ module Grid = struct
     let acc = ref [] in
     for x = 0 to dimx-1 do
       for y=0 to dimy-1 do
-        if g.(x).(y) <> 0 then
+        if g.(x).(y) = 0 then
           begin acc := (x,y)::!acc end
       done;
     done;

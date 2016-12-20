@@ -6,3 +6,4 @@
  *)
 
 val main : unit -> unit
+

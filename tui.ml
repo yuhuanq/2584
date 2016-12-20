@@ -37,9 +37,9 @@ let display_row lst =
     if x=0 then
       print_string "|    "
     else
-      Printf.printf "|4%d" x in
+      Printf.printf "|%4d" x in
   List.iter display_cell lst;
-  print_string "|"
+  print_string "|\n"
 
 let display_board (b : Board.Grid.t Board.t) =
   let fst' (a,b,c) = a in
@@ -53,8 +53,8 @@ let render st =
   (* let status = snd st in *)
   let score = Logic.score st in
   let turns = Logic.turns st in
-  Printf.printf "Score: %d" score;
-  Printf.printf "Turn: %d" turns;
+  Printf.printf "Score: %d\n" score;
+  Printf.printf "Turn: %d\n" turns;
   display_board (fst st)
 
 let goodbye () =

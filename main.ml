@@ -15,6 +15,14 @@ let rec input () =
 
 (* t : Logic.t *)
 let rec loop t =
+  Tui.render t;
   let mv = input () in
-  failwith "unimplemented"
+  let t' = Logic.move t mv in
+  loop t'
+
+let main () =
+  let newgame = Logic.init 4 in
+  loop newgame
+
+let () = main ()
 
