@@ -56,7 +56,5 @@ let move t mv =
 let init n =
   Random.self_init ();
   let board = Board.init n n in
-  return board >>= fun b ->
-    return (Board.spawn b) >>= fun b ->
-      return (Board.spawn b)
+  return board >>= spawn >>= spawn
 
