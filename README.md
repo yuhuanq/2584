@@ -18,5 +18,3 @@ Tested and built with OCaml 4.03. Support for Unix systems only.
 
 `hjkl` to move left,down,up,right respectively
 
-`r` to restart with a fresh board
-
