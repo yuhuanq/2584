@@ -6,20 +6,20 @@
  *)
 type turns = int
 type score = int
+
 module type Rep = sig
-  (* TODO: remove *)
   (* leaving for now for testing, will abstract out eventually *)
-  type t = int array array
+  type t
   val move_left : t -> t * turns * score
   val move_right : t -> t * turns * score
   val move_up : t -> t * turns * score
   val move_down : t -> t * turns * score
+  val to_list : t -> int list list
+  val init : int -> int -> t
 end
-
 (* namespace for grid related methods *)
 module Grid = struct
-  type elt = int
-  type t = elt array array
+  type t = int array array
 
   let turns = ref 0
 
@@ -33,7 +33,7 @@ module Grid = struct
   let set g x y nw : t =
     g.(x).(y) <- nw; g
 
-  let get g x y : elt =
+  let get g x y : int =
     g.(x).(y)
 
   (* to 2d list *)
@@ -49,6 +49,9 @@ module Grid = struct
 
   (* use format_grid to print a value to the console *)
   let print_grid g = g |> to_list |> format_grid
+
+  let contains_win g =
+    g |> to_list |> List.flatten |> List.mem 2584
 
   let empty_cells g : (int * int) list option =
     let dimx,dimy = Array.length g.(0), Array.length g in
@@ -170,12 +173,11 @@ open Monad
 let (>>=) = bind
 
 let init x y = return (Grid.init x y)
-let move_left board : Grid.t Monad.t = board >>= Grid.move_left
+let move_left board = board >>= Grid.move_left
 let move_right board = board >>= Grid.move_right
 let move_up board = board >>= Grid.move_up
 let move_down board = board >>= Grid.move_down
 
-let () = Random.self_init ()
 let spawn (grid,turns,score) =
   match Grid.empty_cells grid with
   | None -> grid,turns,score
@@ -185,4 +187,21 @@ let spawn (grid,turns,score) =
       let grid' = Grid.set grid x y 1 in
       grid',turns,score
 
+let turns (_,ts,_) = ts
+let score (_,_,sc) = sc
+
+let fst' (a,_,_) = a
+let moves_available t =
+  let has_empty_cells =
+    match Grid.empty_cells (fst' t) with
+    | Some _ -> true
+    | None -> false in
+  has_empty_cells ||
+  fst' (move_left t) <> fst' t ||
+  fst' (move_right t) <> fst' t ||
+  fst' (move_down t) <> fst' t ||
+  fst' (move_up t) <> fst' t
+
+let contains_win t =
+  Grid.contains_win (fst' t)
 

@@ -4,9 +4,10 @@
  *
  * Distributed under terms of the MIT license.
  *)
-open Board
 
-val init : unit -> unit
+val hello : unit -> unit
 
-val display : Grid.t Monad.t -> unit
+val render : Logic.t -> unit
+
+val goodbye : unit -> unit
 

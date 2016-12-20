@@ -4,7 +4,11 @@
 #
 
 all:
-	ocamlbuild fib.byte
+	ocamlbuild fib.cma fib.cmxa
+	ocamlbuild board.cma board.cmxa
+	ocamlbuild logic.cma logic.cmxa
+	ocamlbuild input.cma input.cmxa
+	ocamlbuild tui.cma tui.cmxa
 
 test:
 	ocamlbuild -pkgs oUnit test.byte && ./test.byte
