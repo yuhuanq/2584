@@ -6,8 +6,10 @@
  *)
 
 let is_adj a b =
-  let smaller = min a b in
-  let d = abs (a - b) in
-  if d > smaller then false
-  else true
+  if a <> 1 && a = b then false
+  else
+    let smaller = min a b in
+    let d = abs (a - b) in
+    if d > smaller then false
+    else true
 
